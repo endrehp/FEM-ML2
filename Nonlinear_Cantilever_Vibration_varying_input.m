@@ -417,3 +417,21 @@ for j=1:k
     EPS(j)= eps; %convergence variable for each time step    
      
 end
+
+%get velocity
+dUNL = zeros(z,k+1);
+for time_i=1:k+1
+   for node_j=1:z
+       
+       if time_i == 1
+           dUNL(node_j, time_i) = 1/(2*deltat)*(UNL(node_j,time_i+1) - UNL(node_j,time_i));
+       
+       elseif time_i == k+1
+           dUNL(node_j, time_i) = 1/(2*deltat)*(UNL(node_j,time_i) - UNL(node_j,time_i-1));
+       
+       else
+           dUNL(node_j, time_i) = 1/(2*deltat)*(UNL(node_j,time_i+1) - UNL(node_j,time_i-1)); 
+       
+       end
+   end
+end
