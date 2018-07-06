@@ -5,8 +5,8 @@ Alpha1= 0.4; %0.064;
 Alpha2= 0.004;%4.72e-5; %proportional damping coefficients 
 N= 20; h= L/N; numX=10; deltax= h/numX; %elements variables 
 TOL=0.01; %convergence criterion for nonlinear loop 
-deltat= 0.001;  %tf=3;
-k= tf/deltat; %time variables 
+%deltat= 0.005;  %tf=3;
+%k= tf/deltat; %time variables 
 g=9.81; ab= 2.97*g; %OMEGA= 17.547; %force variables 
 Area= W*tk;  I= 1/12*W*tk^3; %section properties 
 
@@ -120,8 +120,9 @@ f_rand = rand(z-2,1);
 %Main loop 
 for j=1:k     
     
+    Fg = f_constant*rs(j)*ones(z-2,1);
     %Fg = PHI*FD*cos(THETA*time(j));
-    Fg = f_constant*cos(THETA*time(j))*ones(z-2,1);
+    %Fg = f_constant*cos(THETA*time(j))*ones(z-2,1);
     %Fg = f_constant*rand(z-2,1)*cos(THETA*time(j));
     %Fg = ones(z-2,1)*f_constant; Fg(2:2:end) = 0;
     %Fg = zeros(z-2,1); Fg(end-1,1)=f_constant*20;

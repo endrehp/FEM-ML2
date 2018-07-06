@@ -1,28 +1,28 @@
 close all
 
 
-for i=1:20:length(UNL(1,:))
+for i=1:length(UNL(1,:))
     
     cla
     clf
    
     %ul = ULin(1:2:end, i);
     unl = UNL(1:2:end, i);
-    dunl = dUNL(1:2:end,i)*0.1;
+    %dunl = dUNL(1:2:end,i)*0.1;
     
     %f = FNLin(1:2:end, i)*0.1;
     
     hold on
     %plot(ul, 'o')
     plot(unl)
-    plot(dunl)
+    %plot(dunl)
     %plot(f)
     %plot((unl-ul).^2)
     %disp(max((unl-ul).^2))
-    axis([0 25 -0.003 0.003])
+    axis([0 25 -0.03 0.03])
     
     drawnow
-    pause(0.1)
+    %pause(0.1)
     
 
 end
