@@ -49,9 +49,14 @@ for i=1:1
    %f_constant = 0.0001*(-1+2*rand());
    %OMEGA = 20*rand();
    
-   file_D = 'C:/Users/endrep/Documents/training_batches/D' + string(counter_h) + '.csv'; 
-   file_F = 'C:/Users/endrep/Documents/training_batches/F' + string(counter_h) + '.csv';
-   file_Dt = 'C:/Users/endrep/Documents/training_batches/Dt' + string(counter_h) + '.csv';
+   %file_D = 'C:/Users/endrep/Documents/training_batches/D' + string(counter_h) + '.csv'; 
+   %file_F = 'C:/Users/endrep/Documents/training_batches/F' + string(counter_h) + '.csv';
+   %file_Dt = 'C:/Users/endrep/Documents/training_batches/Dt' + string(counter_h) + '.csv';
+   
+   file_D = '../training_batches/D' + string(counter_h) + '.csv'; 
+   file_F = '../training_batches/F' + string(counter_h) + '.csv';
+   file_Dt = '../training_batches/Dt' + string(counter_h) + '.csv';
+   
    csvwrite(file_D, D);
    csvwrite(file_F, F);
    csvwrite(file_Dt, Dt);
