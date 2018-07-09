@@ -2,16 +2,16 @@
 close all
 %Generate training data
 
-Omegas = [10,2,3,4,5,6];
+Omegas = [4,2,3,4,5,6];
 
 X_train_total = [];
 UL_total = [];
 Y_train_total =[];
 %OMEGA = 6;
-f_constant = 0.0001;
+f_constant = 0.001;
 counter_h = 1;
 deltat= 0.01;  
-tf = 300;
+tf = 60;
 k= tf/deltat;
 
 for i=1:1
@@ -30,7 +30,7 @@ for i=1:1
             rn = rand();
         end
 
-        rs(i) = sin(rn*x_rs(i))^2 + cos(1/4*x_rs(i)) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i)); 
+        rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i)) + cos((10 + 8*rn)*x_rs(i)); 
 
     end
    
@@ -53,9 +53,9 @@ for i=1:1
    %file_F = 'C:/Users/endrep/Documents/training_batches/F' + string(counter_h) + '.csv';
    %file_Dt = 'C:/Users/endrep/Documents/training_batches/Dt' + string(counter_h) + '.csv';
    
-   file_D = '../training_batches/D' + string(counter_h) + '.csv'; 
-   file_F = '../training_batches/F' + string(counter_h) + '.csv';
-   file_Dt = '../training_batches/Dt' + string(counter_h) + '.csv';
+   file_D = '../training_batches/sineD' + string(counter_h) + '.csv'; 
+   file_F = '../training_batches/sineF' + string(counter_h) + '.csv';
+   file_Dt = '../training_batches/sineDt' + string(counter_h) + '.csv';
    
    csvwrite(file_D, D);
    csvwrite(file_F, F);

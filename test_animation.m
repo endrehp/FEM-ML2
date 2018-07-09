@@ -15,10 +15,10 @@ for i=1:4:length(predictions(:,1))
     
     
     hold on
-    plot(x, p_d, '-o', 'DisplayName', 'dependent')
+    %plot(x, p_d, '-o', 'DisplayName', 'dependent')
     plot(x, p_i, '-x', 'DisplayName', 'independent')
-    %plot(x, y_t, 'DisplayName', 'test')
-    plot(x, y_tr, 'DisplayName', 'test')
+    plot(x, y_t, 'DisplayName', 'test')
+    %plot(x, y_tr, 'DisplayName', 'test')
     %plot(x, ul, '-x')
     %plot((unl-ul).^2)
     %disp(max((unl-ul).^2))

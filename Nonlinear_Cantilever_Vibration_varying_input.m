@@ -120,9 +120,9 @@ f_rand = rand(z-2,1);
 %Main loop 
 for j=1:k     
     
-    Fg = f_constant*rs(j)*ones(z-2,1);
+    %Fg = f_constant*rs(j)*ones(z-2,1);
     %Fg = PHI*FD*cos(THETA*time(j));
-    %Fg = f_constant*cos(THETA*time(j))*ones(z-2,1);
+    Fg = f_constant*cos(THETA*time(j))*ones(z-2,1);
     %Fg = f_constant*rand(z-2,1)*cos(THETA*time(j));
     %Fg = ones(z-2,1)*f_constant; Fg(2:2:end) = 0;
     %Fg = zeros(z-2,1); Fg(end-1,1)=f_constant*20;
