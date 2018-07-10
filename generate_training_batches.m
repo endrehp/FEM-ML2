@@ -30,7 +30,8 @@ for i=1:1
             rn = rand();
         end
 
-        rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i)) + cos((10 + 8*rn)*x_rs(i)); 
+        %rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i));% + cos((10 + 8*rn)*x_rs(i)); 
+        rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i));
 
     end
    
@@ -53,9 +54,9 @@ for i=1:1
    %file_F = 'C:/Users/endrep/Documents/training_batches/F' + string(counter_h) + '.csv';
    %file_Dt = 'C:/Users/endrep/Documents/training_batches/Dt' + string(counter_h) + '.csv';
    
-   file_D = '../training_batches/sineD' + string(counter_h) + '.csv'; 
-   file_F = '../training_batches/sineF' + string(counter_h) + '.csv';
-   file_Dt = '../training_batches/sineDt' + string(counter_h) + '.csv';
+   file_D = '../training_batches/sfulD' + string(counter_h) + '.csv'; 
+   file_F = '../training_batches/sfulF' + string(counter_h) + '.csv';
+   file_Dt = '../training_batches/sfulDt' + string(counter_h) + '.csv';
    
    csvwrite(file_D, D);
    csvwrite(file_F, F);
