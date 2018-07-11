@@ -16,13 +16,13 @@ for i=1:4:length(predictions(:,1))
     
     hold on
     %plot(x, p_d, '-o', 'DisplayName', 'dependent')
-    plot(x, p_i, '-x', 'DisplayName', 'independent')
+    plot(x, p_i, '-o', 'DisplayName', 'independent')
     plot(x, y_t, 'DisplayName', 'test')
     %plot(x, y_tr, 'DisplayName', 'test')
     %plot(x, ul, '-x')
     %plot((unl-ul).^2)
     %disp(max((unl-ul).^2))
-    axis([0 1.2 -0.05 0.05])
+    axis([0 1.2 -0.06 0.06])
     %legend('show')
     drawnow
     %pause(0.1)
