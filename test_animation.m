@@ -1,16 +1,16 @@
 close all
 
-x = linspace(0,1, length(predictions(1,:)));
+x = linspace(0,1, length(preds(1,:)));
 %d_max = max(max(UNL_total));
-for i=1:4:length(predictions(:,1))
+for i=1:4:length(preds(:,1))
     
     cla
     clf
    
-    p_d = predictions(i, :); %dependent predictions
+    %p_d = predictions(i, :); %dependent predictions
     p_i = preds(i, :); %independent predictions
     y_t = y_test(i,:); %test data
-    y_tr = y_train(i,:);
+    %y_tr = y_train(i,:);
     %ul = UL_total(1:2:end, end-length(preds(:,1))+i)/d_max; %linear solution
     
     
