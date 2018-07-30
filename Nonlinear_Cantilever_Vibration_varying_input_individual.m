@@ -125,8 +125,9 @@ for j=1:k
     
     x_rr = sin(pi*linspace(0,1,N) + j).^2;
     
-    Fg = zeros(z-2,1);
-    Fg(1:2:end) = f_constant*rs(j)*x_rr';
+    Fg_node = f_constant*rs(j)*x_rr(node);
+    Fg = zeros(z-2, 1);
+    Fg(node*2-1) = Fg_node;
     %Fg = PHI*FD*cos(THETA*time(j));
     %Fg = f_constant*cos(THETA*time(j))*ones(z-2,1);
     %Fg = f_constant*rand(z-2,1)*cos(THETA*time(j));
@@ -136,14 +137,12 @@ for j=1:k
     if mod(j,100)==0
         disp(j);
     end
-    
-    %Linear loop
+    %Linear loop     
     for o=1:z-2       
         for p=1:j     
             ULr(o,p)= UL(o+2,p);      
         end
     end
-    
     if j==1  
         U0= ULr(:,1); 
         U1= ULr(:,1);  

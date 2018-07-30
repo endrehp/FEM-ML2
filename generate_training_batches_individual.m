@@ -7,7 +7,6 @@ Omegas = [4,2,3,4,5,6];
 X_train_total = [];
 UL_total = [];
 Y_train_total =[];
-OMEGA = 4;
 f_constant = 0.00001;
 counter_h = 1;
 deltat= 0.01;  
@@ -15,29 +14,36 @@ tf = 300;
 k= tf/deltat;
 
 rng(101);
+n_nodes = 5;
 
-for i=1:1
+OMEGA = 4;
 
-    %tf = 1 + randi([1,3]);
-    
-   %OMEGA = Omegas(counter_h);
-   
-    x_rs = linspace(0, tf, k);
+%% Generate load vector in time
+x_rs = linspace(0, tf, k);
 
-    rs = zeros(length(x_rs),1);
-    rn = rand();
-    for i=1:length(x_rs)
+rs = zeros(length(x_rs),1);
+rn = rand();
+for i=1:length(x_rs)
 
-        if mod(i,100) == 0
-            rn = rand();
-        end
-
-        rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i)) + 3*cos((10 + 8*rn)*x_rs(i)); 
-        %rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i));
-
+    if mod(i,100) == 0
+        rn = rand();
     end
-   
-   Nonlinear_Cantilever_Vibration_varying_input
+
+    rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i)) + 3*cos((10 + 8*rn)*x_rs(i)); 
+    %rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i));
+
+end
+
+
+%% Compute response for every individual node excitement
+
+Responses = zeros(k+1, n_nodes, n_nodes);
+
+for i=1:n_nodes
+    
+   node = i
+
+   Nonlinear_Cantilever_Vibration_varying_input_individual;
    
    FM = FNLin';
    DM = UNL';
@@ -56,16 +62,15 @@ for i=1:1
    %file_F = 'C:/Users/endrep/Documents/training_batches/F' + string(counter_h) + '.csv';
    %file_Dt = 'C:/Users/endrep/Documents/training_batches/Dt' + string(counter_h) + '.csv';
    
-   file_D = '../training_batches/rrD' + string(counter_h) + '.csv'; 
-   file_F = '../training_batches/rrF' + string(counter_h) + '.csv';
-   file_Dt = '../training_batches/rrDt' + string(counter_h) + '.csv';
+   file_D = '../training_batches/indv_D' + string(node) + '.csv'; 
+   file_F = '../training_batches/indv_F' + string(node) + '.csv';
+   file_Dt = '../training_batches/indv_Dt' + string(node) + '.csv';
    
    csvwrite(file_D, D);
    csvwrite(file_F, F);
    csvwrite(file_Dt, Dt);
    
-   counter_h
-   counter_h = counter_h + 1;
+   Responses(:,:,node) = D;
    
    
 end

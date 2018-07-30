@@ -3,7 +3,7 @@ L= 0.662; W= 0.01271; tk= 5.5e-4; %beam dimensions
 rho = 7400; E = 165.5e9; %Material properties
 Alpha1= 0.4; %0.064; 
 Alpha2= 0.004;%4.72e-5; %proportional damping coefficients 
-N= 5; h= L/N; numX=10; deltax= h/numX; %elements variables 
+N= 20; h= L/N; numX=10; deltax= h/numX; %elements variables 
 TOL=0.01; %convergence criterion for nonlinear loop 
 %deltat= 0.005;  %tf=3;
 %k= tf/deltat; %time variables 
@@ -123,7 +123,7 @@ f_rand = rand(z-2,1);
 %Main loop 
 for j=1:k     
     
-    x_rr = sin(pi*linspace(0,1,N) + j).^2;
+    x_rr = sin(pi*linspace(0,1,n_nodes) + j).^2;
     
     Fg = zeros(z-2,1);
     Fg(1:2:end) = f_constant*rs(j)*x_rr';
@@ -136,14 +136,12 @@ for j=1:k
     if mod(j,100)==0
         disp(j);
     end
-    
-    %Linear loop
+    %Linear loop     
     for o=1:z-2       
         for p=1:j     
             ULr(o,p)= UL(o+2,p);      
         end
     end
-    
     if j==1  
         U0= ULr(:,1); 
         U1= ULr(:,1);  
