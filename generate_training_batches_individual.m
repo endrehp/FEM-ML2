@@ -7,11 +7,12 @@ Omegas = [4,2,3,4,5,6];
 X_train_total = [];
 UL_total = [];
 Y_train_total =[];
-f_constant = 0.00001;
+f_constant = 0.0001;
 counter_h = 1;
 deltat= 0.01;  
 tf = 300;
 k= tf/deltat;
+N = 5;
 
 rng(101);
 n_nodes = 5;

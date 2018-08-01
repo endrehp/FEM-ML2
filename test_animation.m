@@ -22,7 +22,7 @@ for i=1:4:length(preds(:,1))
     %plot(x, ul, '-x')
     %plot((unl-ul).^2)
     %disp(max((unl-ul).^2))
-    axis([0 1.2 -0.06 0.06])
+    axis([0 1.2 -0.006 0.006])
     %legend('show')
     drawnow
     %pause(0.1)

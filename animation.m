@@ -1,7 +1,7 @@
 close all
 
 
-for i=1:length(UNL(1,:))
+for i=1:10:length(UNL(1,:))
     
     cla
     clf
@@ -19,7 +19,7 @@ for i=1:length(UNL(1,:))
     %plot(f)
     %plot((unl-ul).^2)
     %disp(max((unl-ul).^2))
-    axis([0 25 -0.03 0.03])
+    axis([0 14 -0.03 0.03])
     
     drawnow
     %pause(0.1)

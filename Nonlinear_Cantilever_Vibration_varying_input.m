@@ -3,7 +3,8 @@ L= 0.662; W= 0.01271; tk= 5.5e-4; %beam dimensions
 rho = 7400; E = 165.5e9; %Material properties
 Alpha1= 0.4; %0.064; 
 Alpha2= 0.004;%4.72e-5; %proportional damping coefficients 
-N= 5; h= L/N; numX=10; deltax= h/numX; %elements variables 
+%N= 5; 
+h= L/N; numX=10; deltax= h/numX; %elements variables 
 TOL=0.01; %convergence criterion for nonlinear loop 
 %deltat= 0.005;  %tf=3;
 %k= tf/deltat; %time variables 

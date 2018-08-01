@@ -8,11 +8,12 @@ X_train_total = [];
 UL_total = [];
 Y_train_total =[];
 OMEGA = 4;
-f_constant = 0.00001;
+f_constant = 0.0001;
 counter_h = 1;
-deltat= 0.01;  
-tf = 300;
+deltat= 0.001;  
+tf = 100;
 k= tf/deltat;
+N = 12;
 
 rng(101);
 
@@ -56,9 +57,9 @@ for i=1:1
    %file_F = 'C:/Users/endrep/Documents/training_batches/F' + string(counter_h) + '.csv';
    %file_Dt = 'C:/Users/endrep/Documents/training_batches/Dt' + string(counter_h) + '.csv';
    
-   file_D = '../training_batches/rrD' + string(counter_h) + '.csv'; 
-   file_F = '../training_batches/rrF' + string(counter_h) + '.csv';
-   file_Dt = '../training_batches/rrDt' + string(counter_h) + '.csv';
+   file_D = '../training_batches/hf12_dt3D' + string(counter_h) + '.csv'; 
+   file_F = '../training_batches/hf12_dt3F' + string(counter_h) + '.csv';
+   file_Dt = '../training_batches/hf12_dt3Dt' + string(counter_h) + '.csv';
    
    csvwrite(file_D, D);
    csvwrite(file_F, F);
