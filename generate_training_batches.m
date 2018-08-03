@@ -10,8 +10,8 @@ Y_train_total =[];
 OMEGA = 4;
 f_constant = 0.0001;
 counter_h = 1;
-deltat= 0.001;  
-tf = 100;
+deltat= 0.01;  
+tf = 30;
 k= tf/deltat;
 N = 12;
 
@@ -33,9 +33,10 @@ for i=1:1
             rn = rand();
         end
 
-        rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i)) + 3*cos((10 + 8*rn)*x_rs(i)); 
+        %rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i)) + 3*cos((10 + 8*rn)*x_rs(i)); 
         %rs(i) = sin(rn*x_rs(i))^2 + 2*cos(4*2*pi*x_rs(i)+rn) - sin(17/360*x_rs(i))^(3) - rn*sin(0.1*x_rs(i));
-
+        rs(i) = sin(6.02*x_rs(i));
+        
     end
    
    Nonlinear_Cantilever_Vibration_varying_input
@@ -61,9 +62,9 @@ for i=1:1
    file_F = '../training_batches/hf12_dt3F' + string(counter_h) + '.csv';
    file_Dt = '../training_batches/hf12_dt3Dt' + string(counter_h) + '.csv';
    
-   csvwrite(file_D, D);
-   csvwrite(file_F, F);
-   csvwrite(file_Dt, Dt);
+   %csvwrite(file_D, D);
+   %csvwrite(file_F, F);
+   %csvwrite(file_Dt, Dt);
    
    counter_h
    counter_h = counter_h + 1;

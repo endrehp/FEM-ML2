@@ -1,7 +1,7 @@
 close all
 
-
-for i=1:8:length(D(:,1))
+a = max(max(D))*3/2;
+for i=1:4:length(D(:,1))
     
     cla
     clf
@@ -19,7 +19,7 @@ for i=1:8:length(D(:,1))
     %plot(f)
     %plot((unl-ul).^2)
     %disp(max((unl-ul).^2))
-    axis([0 11 -40 40])
+    axis([0 11 -a a])
     
     drawnow
     %pause(0.1)

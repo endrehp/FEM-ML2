@@ -12,7 +12,7 @@ rho = 0.006; %kg/mm
 E = 210000; %N/mm2
 I = 0.801*10^6; %mm4
 A = 764; %mm^2
-Alpha1= 0.01;  Alpha2= 0.0001; % Ratio ~1% on first and second mode
+Alpha1= 0.01;  Alpha2= 0.001; % Ratio ~1% on first and second mode
 
 %Element stiffnes matrix
 L = L/n_elements;
@@ -36,7 +36,9 @@ for i=1:n_elements
 end
 
 %Global damping matrix
-C = Alpha1*M + Alpha2*K;
+
+%C = Alpha1*M + Alpha2*K; %Proportional damping
+
 
 %Force vector
 F = zeros(n_dofs, 1); 
@@ -53,14 +55,34 @@ d0(1:2:end) = dz0;
 F = F(3:end);
 K = K(3:end,3:end);
 M = M(3:end,3:end);
-C = C(3:end,3:end);
+%C = C(3:end,3:end);
+
+% Modal damping
+
+%desired ratio
+ratio = 0.01;
+
+%Eigendecomposition
+[U, W] = eig(K, M);
+
+L = length(U);
+
+Da = zeros(L);
+for i=1:L
+
+    Da(i,i) = 2*ratio*sqrt(W(i,i));
+    
+end
+
+%Compute damping matrix
+C =inv(U')*Da*inv(U);
 
 %% Static solution
 d_static = K\F;
 d_static = [0; 0; d_static];
 %plot(d_static(1:2:end))
 
-%% Eigenfrequencies
+%% Eigenfrequencies and Eigenmodes
 
 [ev, ef] = eig(K, M);
 
@@ -73,41 +95,68 @@ ef4 = sqrt(ef(4,4));
 %ef2 = 4.25
 %ef3 = 12.27
 %ef4 = 25.16
+% all in (rad/s)
 %plot(ev(1:2:end,1:5))
 
 %% Time integration parameters
 
 Theta = 0.5;
-tf = 3600; 
-dt = 0.05;
-omega = 0.4;
+tf = 20000; 
+dt = 0.01;
+%omega = 0.4;
 k = tf/dt; %Total number of timesteps
 
-%% Generate load vector within frequency band
+%% Generate load spectrum
 
-freq_band = linspace(0.1*ef1,1.5*ef2,10);
-%freq_band2 = linspace(1.5*ef1,1.2*ef4,10);
-%freq_band = [freq_band1, freq_band2];
+freq_band1 = linspace(0.1*ef1,1.2*ef4,10);
+freq_band2 = linspace(0.1*ef2,1.2*ef4,10);
+freq_band = [freq_band1, freq_band2];
 F = zeros(k, n_dofs-2);
 triangle = linspace(0,1,n_nodes-1);
-ft = zeros(1,k);
+rf = zeros(length(freq_band),1);
 amp = 1;
-t = linspace(0,tf,k);
+
 for i=1:(length(freq_band)-1)
 
-        f0 = freq_band(i);
-        f1 = freq_band(i+1);
-        rf = f0 + rand()*(f1 - f0);%random frequency between f0 and f1
-        
-        ft = ft + amp*sin(rf*t + pi*(2*rand() - 1));
+    f0 = freq_band(i);
+    f1 = freq_band(i+1);
+    rf(i) = f0 + rand()*(f1 - f0);%random frequency between f0 and f1
     
 end
 
-for i=1:k
+
+%% Generate load series
+
+
+t = linspace(0,tf,k);
+k_counter = 1;
+period = 1;
+ft = zeros(1,k);
+while period
     
+    p_length = randi([300,1200]);
+    
+    if k_counter + p_length >= k
+        period = 0;
+        p_length = k-k_counter;
+    end
+    
+    n_freqs = randi([2,10]);
+    f_selections = randi([1,20],1,n_freqs);
+    weights = rand(1,n_freqs);
+    
+    for j=1:n_freqs
+        ft(k_counter:k_counter+p_length) = ft(k_counter:k_counter+p_length) + weights(j)*sin(rf(f_selections(j))*t(k_counter:k_counter+p_length) + rand()*pi);
+    end
+    
+    k_counter = k_counter + p_length;
+    
+
+end
+
+for i=1:k
     %F(i, 1:2:end) = ft(i)*triangle;
     F(i, end-1) = ft(i);
-
 end
 
 F = F*10000/length(freq_band);
@@ -116,7 +165,7 @@ F = F*10000/length(freq_band);
 
 %F = zeros(k, n_dofs-2);
 
-%ft = sin(ef4*t);
+%ft = sin(ef1*t);
 %for i=1:k
     
 %    F(i, 1:2:end) = ft(i);%*triangle;
@@ -171,7 +220,18 @@ for i=2:k
     
 end
 
-    
+%% Frequency spectrum
+
+r_spec = fft(D(:,end-1));
+r_spec = r_spec/max(abs(r_spec));
+
+f_spec = fft(ft);
+f_spec = f_spec/max(abs(f_spec));
+figure
+hold on
+plot(abs(r_spec(1:5000)));
+plot(abs(f_spec(1:5000)), 'r');
+
 
 
 

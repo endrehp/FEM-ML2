@@ -1,0 +1,14 @@
+%% Frequency spectrum
+
+r_spec = fft(D(:,end-1));
+r_spec = r_spec/max(abs(r_spec));
+
+f_spec = fft(ft);
+f_spec = f_spec/max(abs(f_spec));
+figure
+
+x = tf*(
+hold on
+plot(abs(r_spec(1:5000)), 'DisplayName', 'response');
+plot(abs(f_spec(1:5000)), 'r', 'DisplayName', 'input');
+legend('show')

@@ -56,7 +56,7 @@ z= 2*(N+1);
 
 Mg= zeros(z); 
 Kg= zeros(z); 
-%Cg= zeros(z);
+Cg= zeros(z);
 x1= 1; 
 for x=1:N     
     a=1;     
@@ -82,26 +82,6 @@ for i=1:z-2
         CgR(i,j)= Cg(i+2,j+2);     
     end
 end
-
-% Modal damping
-
-%desired ratio
-ratio = 0.01;
-
-%Eigendecomposition
-[U, W] = eig(KgR, MgR);
-
-L = length(U);
-
-Da = zeros(L);
-for i=1:L
-
-    Da(i,i) = 2*ratio*sqrt(W(i,i));
-    
-end
-
-%Compute damping matrix
-%CgR =inv(U')*Da*inv(U);
 
 %Newmark matrices - LINEAR 
 A1= MgR + Gamma*deltat*CgR + Beta*deltat^2*KgR; 
@@ -154,15 +134,11 @@ for j=1:k
     %x_rr = sin(pi*linspace(0,1,N) + j).^2;
     %x_rr = linspace(0,1,N);
     
-   
+    %Point load at tip
+    x_rr = zeros(
     
     Fg = zeros(z-2,1);
-    
-    %Fg(1:2:end) = f_constant*rs(j)*x_rr'; %Triangle load
-    Fg(end-1) = f_constant*rs(j); %Point load at tip
-    
-    
-    
+    Fg(1:2:end) = f_constant*rs(j)*x_rr';
     %Fg = PHI*FD*cos(THETA*time(j));
     %Fg = f_constant*cos(THETA*time(j))*ones(z-2,1);
     %Fg = f_constant*rand(z-2,1)*cos(THETA*time(j));
