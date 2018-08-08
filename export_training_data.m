@@ -2,7 +2,8 @@
 
 counter_h = 0;
 
-title = 'lin_white_noise_dt005';
+%title = 'lin_white_noise2_dt01';
+title = 'unseen1';
 
 file_D = '../training_batches/'+ string(title) +'D' + string(counter_h) + '.csv'; 
 file_F = '../training_batches/'+ string(title) +'F' + string(counter_h) + '.csv';

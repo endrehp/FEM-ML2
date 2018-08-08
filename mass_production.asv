@@ -1,3 +1,5 @@
+% Mass production
+
 %Linear beam model
 
 %%
@@ -5,6 +7,10 @@ n_elements = 10;
 n_nodes = n_elements + 1;
 n_dofs = n_nodes*2;
 x = linspace(0, 1, n_nodes);
+
+counter_h = 0;
+
+%rng(101);
 %%
 
 L = 1000; %mm
@@ -12,7 +18,7 @@ rho = 0.006; %kg/mm
 E = 210000; %N/mm2
 I = 0.801*10^6; %mm4
 A = 764; %mm^2
-Alpha1= 0.4;  Alpha2= 0.04; % COME BACK TO THIS
+Alpha1= 0.01;  Alpha2= 0.0001; % Ratio ~1% on first and second mode
 
 %Element stiffnes matrix
 L = L/n_elements;
@@ -53,7 +59,27 @@ d0(1:2:end) = dz0;
 F = F(3:end);
 K = K(3:end,3:end);
 M = M(3:end,3:end);
-C = C(3:end,3:end);
+%C = C(3:end,3:end);
+
+% Modal damping
+
+%desired ratio
+ratio = 0.01;
+
+%Eigendecomposition
+[U, W] = eig(K, M);
+
+L = length(U);
+
+Da = zeros(L);
+for i=1:L
+
+    Da(i,i) = 2*ratio*sqrt(W(i,i));
+    
+end
+
+%Compute damping matrix
+C =inv(U')*Da*inv(U);
 
 %% Static solution
 d_static = K\F;
@@ -66,42 +92,55 @@ d_static = [0; 0; d_static];
 
 ef1 = sqrt(ef(1,1));
 ef2 = sqrt(ef(2,2));
+ef3 = sqrt(ef(3,3));
+ef4 = sqrt(ef(4,4));
 
 %ef1 = 0.67
 %ef2 = 4.25
 %ef3 = 12.27
 %ef4 = 25.16
-plot(ev(1:2:end,1:5))
+%plot(ev(1:2:end,1:5))
+title = 'mass_production_white_noise_unseen2';
 
 %% Time integration parameters
 
 Theta = 0.5;
-tf = 100; 
-dt = 0.01;
-omega = 0.4;
+tf = 3600; 
+dt = 0.1;
 k = tf/dt; %Total number of timesteps
+
+for components=20
+    
+for iter = 1:2
 
 %% Generate load vector within frequency band
 
-freq_band = linspace(0,ef1,20);
+freq_band1 = linspace(0.1*ef1,0.7*ef1,components);
+freq_band2 = linspace(1.5*ef1,0.8*ef2,components);
+freq_band3 = linspace(1.2*ef2,1.5*ef2,components/2);
+freq_band = [freq_band1, freq_band2];
 F = zeros(k, n_dofs-2);
 triangle = linspace(0,1,n_nodes-1);
 ft = zeros(1,k);
 amp = 1;
 t = linspace(0,tf,k);
 for i=1:(length(freq_band)-1)
-
+    
+    if i ~= components
+        
         f0 = freq_band(i);
         f1 = freq_band(i+1);
         rf = f0 + rand()*(f1 - f0);%random frequency between f0 and f1
         
-        ft = ft + amp*sin(rf*2*pi*t + pi*(2*rand() - 1));
+        ft = ft + amp*sin(rf*t + pi*(2*rand() - 1));
+    end
     
 end
 
 for i=1:k
     
-    F(i, 1:2:end) = ft(i)*triangle;
+    %F(i, 1:2:end) = ft(i)*triangle;
+    F(i, end-1) = ft(i);
 
 end
 
@@ -109,16 +148,16 @@ F = F*10000/length(freq_band);
 
 %% Resonance load
 
-F = zeros(k, n_dofs-2);
+%F = zeros(k, n_dofs-2);
 
-ft = sin(2*pi*ef1*t);
-for i=1:k
+%ft = sin(ef4*t);
+%for i=1:k
     
-    F(i, 1:2:end) = ft(i)*triangle;
+%    F(i, 1:2:end) = ft(i);%*triangle;
 
-end
+%end
 
-F = F*10000; 
+%F = F*10000; 
 
 %% Constant load
 
@@ -146,7 +185,7 @@ Dt = zeros(k,n_nodes-1);
 D(1,:) = d_old(1:2:end);
 D(1,:) = dt_old(1:2:end);
 
-for i=2:(k-1)
+for i=2:k
     
     F_old = F(i-1, :)';
     F_new = F(i,:)';
@@ -166,8 +205,18 @@ for i=2:(k-1)
     
 end
 
-    
+%Export training data
 
 
 
-    
+file_D = '../training_batches/'+ string(title) +'D' + string(counter_h) + '.csv'; 
+file_F = '../training_batches/'+ string(title) +'F' + string(counter_h) + '.csv';
+file_Dt = '../training_batches/'+ string(title) +'Dt' + string(counter_h) + '.csv';
+
+csvwrite(file_D, D);
+csvwrite(file_F, ft');
+csvwrite(file_Dt, Dt);
+
+counter_h = counter_h + 1
+end
+end

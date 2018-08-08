@@ -1,3 +1,5 @@
+% Mass production
+
 %Linear beam model
 
 %%
@@ -5,6 +7,10 @@ n_elements = 10;
 n_nodes = n_elements + 1;
 n_dofs = n_nodes*2;
 x = linspace(0, 1, n_nodes);
+
+counter_h = 0;
+
+%rng(101);
 %%
 
 L = 1000; %mm
@@ -12,7 +18,7 @@ rho = 0.006; %kg/mm
 E = 210000; %N/mm2
 I = 0.801*10^6; %mm4
 A = 764; %mm^2
-Alpha1= 0.01;  Alpha2= 0.001; % Ratio ~1% on first and second mode
+Alpha1= 0.01;  Alpha2= 0.0001; % Ratio ~1% on first and second mode
 
 %Element stiffnes matrix
 L = L/n_elements;
@@ -36,9 +42,7 @@ for i=1:n_elements
 end
 
 %Global damping matrix
-
-%C = Alpha1*M + Alpha2*K; %Proportional damping
-
+C = Alpha1*M + Alpha2*K;
 
 %Force vector
 F = zeros(n_dofs, 1); 
@@ -67,22 +71,22 @@ ratio = 0.01;
 
 L = length(U);
 
-D = zeros(L);
+Da = zeros(L);
 for i=1:L
 
-    D(i,i) = 2*ratio*sqrt(W(i,i));
+    Da(i,i) = 2*ratio*sqrt(W(i,i));
     
 end
 
 %Compute damping matrix
-C =inv(U')*D*inv(U);
+C =inv(U')*Da*inv(U);
 
 %% Static solution
 d_static = K\F;
 d_static = [0; 0; d_static];
 %plot(d_static(1:2:end))
 
-%% Eigenfrequencies and Eigenmodes
+%% Eigenfrequencies
 
 [ev, ef] = eig(K, M);
 
@@ -95,67 +99,49 @@ ef4 = sqrt(ef(4,4));
 %ef2 = 4.25
 %ef3 = 12.27
 %ef4 = 25.16
-% all in (rad/s)
 %plot(ev(1:2:end,1:5))
+title = 'mass_production_white_noise_component_test';
 
 %% Time integration parameters
 
 Theta = 0.5;
-tf = 5000; 
+tf = 3600; 
 dt = 0.1;
-%omega = 0.4;
 k = tf/dt; %Total number of timesteps
 
-%% Generate load spectrum
+for components=3:20
+    
+for iter = 1:1
 
-freq_band1 = linspace(0.1*ef1,1.2*ef1,10);
-freq_band2 = linspace(1.2*ef1,1.2*ef2,10);
-freq_band = [freq_band1, freq_band2];
+%% Generate load vector within frequency band
+
+freq_band1 = linspace(0.1*ef1,0.7*ef1,components);
+freq_band2 = linspace(1.5*ef1,0.8*ef2,components);
+freq_band3 = linspace(1.2*ef2,1.5*ef2, round(components/2));
+freq_band = [freq_band1, freq_band2, freq_band3];
 F = zeros(k, n_dofs-2);
 triangle = linspace(0,1,n_nodes-1);
-rf = zeros(length(freq_band),1);
-amp = 1;
-
-for i=1:(length(freq_band)-1)
-
-    f0 = freq_band(i);
-    f1 = freq_band(i+1);
-    rf(i) = f0 + rand()*(f1 - f0);%random frequency between f0 and f1
-    
-end
-
-
-%% Generate load series
-
-
-t = linspace(0,tf,k);
-k_counter = 1;
-period = 1;
 ft = zeros(1,k);
-while period
+amp = 1;
+t = linspace(0,tf,k);
+for i=1:(length(freq_band)-1)
     
-    p_length = randi([300,1200]);
-    
-    if k_counter + p_length >= k
-        period = 0;
-        p_length = k-k_counter;
+    if mod(i, components) ~= 0
+        
+        f0 = freq_band(i);
+        f1 = freq_band(i+1);
+        rf = f0 + rand()*(f1 - f0);%random frequency between f0 and f1
+        
+        ft = ft + amp*sin(rf*t + pi*(2*rand() - 1));
     end
     
-    n_freqs = randi([2,10]);
-    f_selections = randi([1,20],1,n_freqs);
-    weights = rand(1,n_freqs);
-    
-    for j=1:n_freqs
-        ft(k_counter:k_counter+p_length) = ft(k_counter:k_counter+p_length) + weights(j)*sin(rf(f_selections(j))*t(k_counter:k_counter+p_length) + rand()*pi);
-    end
-    
-    k_counter = k_counter + p_length;
-    
-
 end
 
 for i=1:k
-    F(i, 1:2:end) = ft(i)*triangle;
+    
+    %F(i, 1:2:end) = ft(i)*triangle;
+    F(i, end-1) = ft(i);
+
 end
 
 F = F*10000/length(freq_band);
@@ -164,7 +150,7 @@ F = F*10000/length(freq_band);
 
 %F = zeros(k, n_dofs-2);
 
-%ft = sin(ef1*t);
+%ft = sin(ef4*t);
 %for i=1:k
     
 %    F(i, 1:2:end) = ft(i);%*triangle;
@@ -219,19 +205,18 @@ for i=2:k
     
 end
 
-%% Frequency spectrum
-
-r_spec = fft(D(:,end-1));
-r_spec = r_spec/max(abs(r_spec));
-
-f_spec = fft(ft);
-f_spec = f_spec/max(abs(f_spec));
-figure
-hold on
-plot(abs(r_spec(1:5000)));
-plot(abs(f_spec(1:5000)), 'r');
+%Export training data
 
 
 
+file_D = '../training_batches/'+ string(title) +'D' + string(counter_h) + '.csv'; 
+file_F = '../training_batches/'+ string(title) +'F' + string(counter_h) + '.csv';
+file_Dt = '../training_batches/'+ string(title) +'Dt' + string(counter_h) + '.csv';
 
-    
+csvwrite(file_D, D);
+csvwrite(file_F, ft');
+csvwrite(file_Dt, Dt);
+
+counter_h = counter_h + 1
+end
+end

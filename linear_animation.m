@@ -1,7 +1,7 @@
 close all
 
 a = max(max(D))*3/2;
-for i=1:4:length(D(:,1))
+for i=1:length(D(:,1))
     
     cla
     clf

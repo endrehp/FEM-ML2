@@ -20,7 +20,7 @@ ef4 = sqrt(ef(4,4));
 
 Theta = 0.5;
 tf = 100; 
-dt = 0.01;
+dt = 0.1;
 %omega = 0.4;
 k = tf/dt; %Total number of timesteps
 

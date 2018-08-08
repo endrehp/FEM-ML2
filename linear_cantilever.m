@@ -5,6 +5,8 @@ n_elements = 10;
 n_nodes = n_elements + 1;
 n_dofs = n_nodes*2;
 x = linspace(0, 1, n_nodes);
+
+rng(102);
 %%
 
 L = 1000; %mm
@@ -53,7 +55,27 @@ d0(1:2:end) = dz0;
 F = F(3:end);
 K = K(3:end,3:end);
 M = M(3:end,3:end);
-C = C(3:end,3:end);
+%C = C(3:end,3:end);
+
+% Modal damping
+
+%desired ratio
+ratio = 0.01;
+
+%Eigendecomposition
+[U, W] = eig(K, M);
+
+L = length(U);
+
+Da = zeros(L);
+for i=1:L
+
+    Da(i,i) = 2*ratio*sqrt(W(i,i));
+    
+end
+
+%Compute damping matrix
+C =inv(U')*Da*inv(U);
 
 %% Static solution
 d_static = K\F;
@@ -78,14 +100,14 @@ ef4 = sqrt(ef(4,4));
 %% Time integration parameters
 
 Theta = 0.5;
-tf = 3600; 
-dt = 0.05;
+tf = 10000; 
+dt = 0.1;
 omega = 0.4;
 k = tf/dt; %Total number of timesteps
 
 %% Generate load vector within frequency band
 
-freq_band = linspace(0.1*ef1,1.5*ef2,10);
+freq_band = linspace(0.1*ef1,0.7*ef1,6);
 %freq_band2 = linspace(1.5*ef1,1.2*ef4,10);
 %freq_band = [freq_band1, freq_band2];
 F = zeros(k, n_dofs-2);
