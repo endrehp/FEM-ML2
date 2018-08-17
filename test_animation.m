@@ -24,8 +24,8 @@ for i=1:length(preds(:,1))
     
     hold on
     %plot(x, p_d, '-o', 'DisplayName', 'dependent')
-    plot(p_i, '-o', 'DisplayName', 'independent')
-    plot(y_t, 'DisplayName', 'test')
+    plot(p_i, '-o', 'DisplayName', 'predicted')
+    plot(y_t, 'DisplayName', 'actual')
     %plot(x, y_tr, 'DisplayName', 'test')
     %plot(x, ul, '-x')
     %plot((unl-ul).^2)

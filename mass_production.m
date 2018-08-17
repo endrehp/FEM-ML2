@@ -100,18 +100,22 @@ ef4 = sqrt(ef(4,4));
 %ef3 = 12.27
 %ef4 = 25.16
 %plot(ev(1:2:end,1:5))
-title = 'mass_production_white_noise_component_test';
+title = 'white_noise_no_resonance';
 
 %% Time integration parameters
 
 Theta = 0.5;
-tf = 3600; 
+tf = 360; 
 dt = 0.1;
 k = tf/dt; %Total number of timesteps
 
-for components=3:20
-    
-for iter = 1:1
+for components=20
+
+% freq_bands = zeros(20, components*2.5);
+% band_widths = zeros(1,20);
+% band_width = 0.1;
+
+for iter = 1:100
 
 %% Generate load vector within frequency band
 
@@ -119,14 +123,47 @@ freq_band1 = linspace(0.1*ef1,0.7*ef1,components);
 freq_band2 = linspace(1.5*ef1,0.8*ef2,components);
 freq_band3 = linspace(1.2*ef2,1.5*ef2, round(components/2));
 freq_band = [freq_band1, freq_band2, freq_band3];
+
+%freq_band = linspace(0.1*ef1, 2*ef2, 2.5*components);
+
+
+
+% if band_width > 0.7*ef1 && band_width < 1.5*ef1
+%     band_width = 1.5*ef1;
+%     
+% elseif band_width > 0.8*ef2 && band_width < 1.2*ef2
+%     band_width = 1.2*ef2;
+% else
+%     band_width = band_width*1.2;
+% end
+% 
+% band_widths(iter) = band_width;
+% 
+% if band_width < 0.7*ef1
+%     freq_band = linspace(0.1*ef1,band_width, components*2.5);
+% 
+% elseif band_width >= 1.5*ef1 && band_width < 0.8*ef2
+%     freq_band1 = linspace(0.1*ef1, 0.7*ef1, components*1.25);
+%     freq_band2 = linspace(1.5*ef1, band_width, components*1.25);
+%     freq_band = [freq_band1, freq_band2];
+% 
+% elseif band_width >= 1.2*ef2
+%     freq_band1 = linspace(0.1*ef1,0.7*ef1,components);
+%     freq_band2 = linspace(1.5*ef1,0.8*ef2,components);
+%     freq_band3 = linspace(1.2*ef2,band_width, round(components/2));
+%     freq_band = [freq_band1, freq_band2, freq_band3];
+% end
+% 
+% freq_bands(iter,:) = freq_band;
+
 F = zeros(k, n_dofs-2);
 triangle = linspace(0,1,n_nodes-1);
 ft = zeros(1,k);
 amp = 1;
 t = linspace(0,tf,k);
-for i=1:(length(freq_band)-1)
+for i=1:2.5*components-1
     
-    if mod(i, components) ~= 0
+    if mod(i, components) ~= 0 && mod(i, components*1.25) ~= 0
         
         f0 = freq_band(i);
         f1 = freq_band(i+1);

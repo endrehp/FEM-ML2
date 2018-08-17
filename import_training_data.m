@@ -3,9 +3,9 @@
 n = 1;
 
 D = []; 
-title = 'mass_production_white_noise_component_test';
+title = 'mass_production_white_noise_resonance';
 
-for i=0:17
+for i=0:99
 
 file_D = '../training_batches/'+ string(title) +'D' + string(i) + '.csv'; 
 %file_F = '../training_batches/'+ string(title) +'F' + string(n) + '.csv';

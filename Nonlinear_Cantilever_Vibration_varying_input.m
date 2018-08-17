@@ -65,7 +65,7 @@ for x=1:N
         for j=x1:x1+3             
             Mg(i,j)=Mg(i,j)+ Me(a,b);             
             Kg(i,j)=Kg(i,j)+ Ke(a,b);            
-            Cg(i,j)=Cg(i,j)+ Ce(a,b);             
+            %Cg(i,j)=Cg(i,j)+ Ce(a,b);             
             b= b+1;         
         end
         a= a+1;     
@@ -79,7 +79,7 @@ for i=1:z-2
     for j=1:z-2        
         MgR(i,j)= Mg(i+2,j+2);        
         KgR(i,j)= Kg(i+2,j+2);       
-        CgR(i,j)= Cg(i+2,j+2);     
+        %CgR(i,j)= Cg(i+2,j+2);     
     end
 end
 
@@ -101,7 +101,7 @@ for i=1:L
 end
 
 %Compute damping matrix
-%CgR =inv(U')*Da*inv(U);
+CgR =inv(U')*Da*inv(U);
 
 %Newmark matrices - LINEAR 
 A1= MgR + Gamma*deltat*CgR + Beta*deltat^2*KgR; 
@@ -146,7 +146,7 @@ time= 0:deltat:tf; %time vector
 f_rand = rand(z-2,1);
 
 
-
+tic()
 
 %Main loop 
 for j=1:k     
@@ -480,3 +480,5 @@ for time_i=1:k+1
        end
    end
 end
+
+time = toc()

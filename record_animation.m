@@ -2,9 +2,9 @@ close all
 
 % Save and export animation
 
-a = max(max(preds))*3/2;
+a = max(max(preds))*4/3;
 
-for i=1:length(preds(1:100,1))
+for i=1:length(preds(:,1))
     
     cla
     clf
@@ -15,9 +15,12 @@ for i=1:length(preds(1:100,1))
     
     
     hold on
-    plot(p_i, '-o')
-    plot(y_t)
-    axis([0 11 -a a])
+    
+    plot(p_i, '-o', 'DisplayName', 'predicted')
+    plot(y_t, 'DisplayName', 'actual')
+    axis([1 11 -a a])
+    legend('show', 'Location', 'northwest')
+ 
     
     Frames(i) = getframe;
     

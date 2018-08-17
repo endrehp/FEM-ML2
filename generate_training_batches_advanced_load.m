@@ -11,9 +11,9 @@ OMEGA = 4;
 f_constant = 0.0001;
 counter_h = 1;
 deltat= 0.01;  
-tf = 500;
+tf = 360;
 k= tf/deltat;
-N = 12;
+N = 10;
 
 rng(101);
 
@@ -31,7 +31,7 @@ ef5 = 342.85;
 
 %%
 
-for i=1:1
+for i=1:10
 
     %tf = 1 + randi([1,3]);
     
@@ -53,55 +53,40 @@ for i=1:1
 %         
 %     end
 %     
-    
-freq_band1 = linspace(0.1*ef1,1.2*ef4,10);
-freq_band2 = linspace(0.9*ef2,1.2*ef4,10);
-freq_band = [freq_band1, freq_band2];
+components = 20;
+freq_band1 = linspace(0.1*ef1,0.7*ef1,components);
+freq_band2 = linspace(1.5*ef1,0.8*ef2,components);
+freq_band3 = linspace(1.2*ef2, 1.5*ef2, components/2);
+freq_band = [freq_band1, freq_band2, freq_band3];
 %F = zeros(k, n_dofs-2);
 %triangle = linspace(0,1,n_nodes-1);
-rf = zeros(length(freq_band),1);
-amp = 1;
 
-for i=1:(length(freq_band)-1)
-
-        f0 = freq_band(i);
-        f1 = freq_band(i+1);
-        rf(i) = f0 + rand()*(f1 - f0);%random frequency between f0 and f1
-    
-end
 
 
 %% Generate load series
 
-
-t = linspace(0,tf,k);
-k_counter = 1;
-period = 1;
 ft = zeros(1,k);
-while period
+amp = 1;
+t = linspace(0,tf,k);
+for i=1:2.5*components-1
     
-    p_length = randi([300,400]);
-    
-    if k_counter + p_length >= k
-        period = 0;
-        p_length = k-k_counter;
+    if mod(i, components) ~= 0 
+        
+        f0 = freq_band(i);
+        f1 = freq_band(i+1);
+        rf = f0 + rand()*(f1 - f0);%random frequency between f0 and f1
+        
+        ft = ft + amp*sin(rf*t + pi*(2*rand() - 1));
     end
     
-    n_freqs = randi([2,10]);
-    f_selections = randi([1,length(freq_band)],1,n_freqs);
-    weights = rand(1,n_freqs);
-    
-    for j=1:n_freqs
-        ft(k_counter:k_counter+p_length) = ft(k_counter:k_counter+p_length) + weights(j)*sin(rf(f_selections(j))*t(k_counter:k_counter+p_length) + rand()*pi);
-    end
-    
-    k_counter = k_counter + p_length;
-    
-
 end
+
     
    rs = ft;
+   
+   tic()
    Nonlinear_Cantilever_Vibration_varying_input
+   time = toc()
    
    FM = FNLin';
    DM = UNL';
@@ -120,13 +105,13 @@ end
    %file_F = 'C:/Users/endrep/Documents/training_batches/F' + string(counter_h) + '.csv';
    %file_Dt = 'C:/Users/endrep/Documents/training_batches/Dt' + string(counter_h) + '.csv';
    
-   file_D = '../training_batches/massD' + string(counter_h) + '.csv'; 
-   file_F = '../training_batches/massF' + string(counter_h) + '.csv';
-   file_Dt = '../training_batches/massDt' + string(counter_h) + '.csv';
+   file_D = '../training_batches/white_noise_NL_D' + string(counter_h) + '.csv'; 
+   file_F = '../training_batches/white_noise_NL_F' + string(counter_h) + '.csv';
+   file_Dt = '../training_batches/white_noise_NL_Dt' + string(counter_h) + '.csv';
    
-   %csvwrite(file_D, D);
-   %csvwrite(file_F, F);
-   %csvwrite(file_Dt, Dt);
+   csvwrite(file_D, D);
+   csvwrite(file_F, F);
+   csvwrite(file_Dt, Dt);
    
    counter_h
    counter_h = counter_h + 1;
